@@ -1,0 +1,64 @@
+:root {
+    --oxford-blue: #05244C;
+    --oxford-blue-2: #00244D;
+    --oxford-blue-3: #00214E;
+    --oxford-blue-4: #00234C;
+    --united-nations-blue: #3497ED;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    background-color: var(--oxford-blue-4);
+    overflow: hidden;
+    display: flex; /* Enable flexbox */
+    justify-content: center; /* Center items horizontally */
+    align-items: center; /* Align items vertically */
+}
+
+.nav-links {
+    display: flex;
+}
+
+.nav-links a {
+    color: var(--united-nations-blue);
+    text-align: center;
+    padding: 7px 8px;
+    text-decoration: none;
+}
+
+.navbar a {
+    float: left;
+    display: block;
+    color: var(--united-nations-blue); /* Updated to your palette */
+    text-align: center;
+    padding: 7px 8px;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    background-color: var(--oxford-blue-2); /* Updated to your palette */
+    color: var(--united-nations-blue);
+}
+
+.nav-button {
+    float: right;
+    display: block;
+    background-color: var(--oxford-blue-3); /* Updated to your palette */
+    color: white;
+    padding: 7px 10px;
+    margin: 4px 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.nav-button:hover {
+    background-color: var(--oxford-blue-4); /* Updated to your palette */
+}
+
+.content {
+    padding: 16px;
+}
