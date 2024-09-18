@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Lockeroo</title><link rel="stylesheet" href="css/style.css"><link rel="icon" type="image/png" href="images/icon.png"><script src="js/index.js"></script><script src="js/password_entry.js"></script></head><body><header class="navbar"><div class="navbar-left"><a href="#home" class="logo" onclick='navigate(event,"home")'><img src="images/icon.png" alt="Lockeroo icon" style="height:75px"> <span class="app-name">Lockeroo</span></a></div><nav class="navbar-center"><a href="#about" onclick='navigate(event,"about")'>About</a> <a href="#pricing" onclick='navigate(event,"pricing")'>Pricing</a> <a href="#support" onclick='navigate(event,"support")'>Support</a></nav><div class="navbar-right"><button class="nav-button" onclick='navigate(event,"login")'>Login</button> <button class="nav-button sign-up" onclick='navigate(event,"signup")'>Sign Up</button></div></header><div class="content"><section id="home" class="page-section"><h1>Welcome to Lockeroo</h1><p>Your secure solution for everything.</p></section><section id="about" class="page-section" style="display:none"><h1>About</h1><p>...</p></section><section id="pricing" class="page-section" style="display:none"><h1>Pricing</h1><p>...</p></section><section id="support" class="page-section" style="display:none"><h1>Support</h1><p>...</p></section><section id="login" class="page-section" style="display:none"><div class="form-container"><h1>Login</h1><form id="login-form"><label for="username">Username:</label> <input type="text" id="username" name="username"> <label for="password">Password:</label> <input type="password" id="password" name="password"> <button type="submit">Login</button></form></div></section><section id="signup" class="page-section" style="display:none"><div class="form-container"><h1>Sign Up</h1><form id="signup-form"><label for="new-username">Username:</label> <input type="text" id="new-username" name="new-username"> <label for="email">Email:</label> <input type="email" id="email" name="email"> <label for="new-password">Password:</label> <input type="password" id="new-password" name="new-password"> <button type="submit">Sign Up</button></form></div></section><section id="account" class="page-section" style="display:none"></section></div></body><script>// Assuming PasswordEntry is already defined and registered.
+
+    // Example Dummy Data
+    const dummyData = [
+        {
+            SiteName: 'Example Website',
+            SiteURL: 'https://example.com',
+            Username: 'exampleUser1',
+            Password: 'password123',
+            Notes: 'My first example password.',
+            CreatedAt: new Date('2023-01-01')
+        },
+        {
+            SiteName: 'Another Site',
+            SiteURL: 'https://anothersite.com',
+            Username: 'anotherUser2',
+            Password: 'secret456',
+            Notes: 'Secure password for another site.',
+            CreatedAt: new Date('2023-05-15')
+        },
+        {
+            SiteName: 'Random Blog',
+            SiteURL: 'https://randomblog.com',
+            Username: 'blogUser3',
+            Password: 'blogPassword789',
+            Notes: 'Password for a random blog account.',
+            CreatedAt: new Date('2022-12-05')
+        }
+    ];
+
+    // Find the #account section
+    const accountSection = document.getElementById('account');
+
+    // Function to create and append a password entry
+    function addPasswordEntry(data) {
+        const passwordEntry = document.createElement('password-entry');
+        passwordEntry.data = data; // Set the data using the setter
+        accountSection.appendChild(passwordEntry);
+    }
+
+    // Loop through the dummy data and append each entry
+    dummyData.forEach((password) => {
+        addPasswordEntry(password);
+    });</script></html>

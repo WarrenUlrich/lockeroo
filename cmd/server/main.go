@@ -1,49 +1,79 @@
+// cmd/server/main.go
 package main
 
 import (
-	"embed"
-	"fmt"
-	"html/template"
-	"io/fs"
+	"flag"
 	"log"
 	"net/http"
-	"os"
+
+	"github.com/warrenulrich/lockeroo/pkg/api"
+	"github.com/warrenulrich/lockeroo/pkg/assets"
+	"github.com/warrenulrich/lockeroo/pkg/db"
+	"github.com/warrenulrich/lockeroo/pkg/middleware"
+	"github.com/warrenulrich/lockeroo/pkg/templates"
 )
 
-//go:embed embed/webapp
-var embeddedFS embed.FS
-
 func main() {
-	fmt.Println("Starting")
-	templateFS, err := fs.Sub(embeddedFS, "embed/webapp/templates")
+	// Command-line flags
+	dbPath := flag.String("dbpath", "./data/database.db", "Path to the SQLite database")
+	addr := flag.String("addr", ":8080", "HTTP network address")
+	flag.Parse()
+
+	// Initialize the database
+	database, err := db.InitDB(*dbPath)
 	if err != nil {
-		log.Printf("Error creating sub filesystem for templates: %v", err)
-		os.Exit(1)
+		log.Fatalf("Error initializing database: %v", err)
+	}
+	defer database.Close()
+
+	// Initialize templates
+	if err := templates.InitTemplates(); err != nil {
+		log.Fatalf("Error initializing templates: %v", err)
 	}
 
-	staticFS, err := fs.Sub(embeddedFS, "embed/webapp/static")
+	// Prepare embedded file systems
+	embedFS, err := assets.GetEmbedFS()
 	if err != nil {
-		log.Printf("Error creating sub filesystem for static files: %v", err)
-		os.Exit(1)
+		log.Fatalf("Error accessing embedded files: %v", err)
 	}
 
-	fileServer := http.FileServer(http.FS(staticFS))
-	http.Handle("/static/", http.StripPrefix("/static/", fileServer))
+	// Create a new HTTP server
+	publicMux := http.NewServeMux()
 
-	templates, err := template.ParseFS(templateFS, "*")
-	if err != nil {
-		log.Printf("Error parsing templates: %v", err)
-		os.Exit(1)
+	// Serve static files
+	fileServer := http.FileServer(http.FS(embedFS))
+	publicMux.Handle("/css/", fileServer)
+	publicMux.Handle("/js/", fileServer)
+	publicMux.Handle("/images/", fileServer)
+
+	// Initialize handlers
+	handlers := &api.Handlers{
+		DB:        database,
+		Templates: templates.Templates,
 	}
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		templates.ExecuteTemplate(w, "index.html", nil)
-	})
+	// Public routes
+	publicMux.HandleFunc("/", handlers.IndexHandler)
+	publicMux.HandleFunc("/auth/login", handlers.HandleLogin)
+	publicMux.HandleFunc("/auth/signup", handlers.HandleSignup)
 
-	log.Println("Starting server on :8080")
-	err = http.ListenAndServe(":5001", nil)
-	if err != nil {
-		log.Printf("Error starting server: %v", err)
-		os.Exit(1)
+	// Protected routes
+	protectedMux := http.NewServeMux()
+	protectedMux.HandleFunc("/auth/status", handlers.AuthStatusHandler)
+	protectedMux.HandleFunc("/auth/logout", handlers.LogoutHandler)
+	
+	mainMux := http.NewServeMux()
+
+	mainMux.Handle("/", publicMux)
+	mainMux.Handle("/auth/login", publicMux)
+	mainMux.Handle("/auth/signup", publicMux)
+
+	mainMux.Handle("/auth/status", middleware.SessionMiddleware(database, protectedMux))
+	mainMux.Handle("/auth/logout", middleware.SessionMiddleware(database, protectedMux))
+
+	// Start the HTTP server
+	log.Printf("Starting server on %s", *addr)
+	if err := http.ListenAndServe(*addr, mainMux); err != nil {
+		log.Fatalf("Server error: %v", err)
 	}
 }

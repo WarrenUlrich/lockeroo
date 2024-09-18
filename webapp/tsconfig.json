@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
       /* Visit https://aka.ms/tsconfig to read more about this file */
-      "outDir": "static/compiled-js", // Output directory for compiled JavaScript
+      "outDir": "static/js", // Output directory for compiled JavaScript
       "rootDir": "./src",
       /* Projects */
       // "incremental": true,                              /* Save .tsbuildinfo files to allow for incremental compilation of projects. */
