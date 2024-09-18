@@ -1,7 +1,6 @@
 "use strict";
 class PasswordEntry extends HTMLElement {
     shadow;
-    expandIcon;
     entryElement;
     detailsElement;
     constructor() {
@@ -18,6 +17,7 @@ class PasswordEntry extends HTMLElement {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
+                    cursor: pointer; /* Make the whole entry clickable */
                 }
                 .details {
                     display: none;
@@ -25,7 +25,6 @@ class PasswordEntry extends HTMLElement {
                     background-color: #f9f9f9;
                 }
                 .expand {
-                    cursor: pointer;
                     transform: rotate(90deg);
                     transition: transform 0.3s;
                 }
@@ -46,10 +45,9 @@ class PasswordEntry extends HTMLElement {
             </div>
         `;
         this.shadow.appendChild(template.content.cloneNode(true));
-        this.expandIcon = this.shadow.querySelector('.expand');
         this.entryElement = this.shadow.querySelector('.entry');
         this.detailsElement = this.shadow.querySelector('.details');
-        this.expandIcon.addEventListener('click', () => this.toggleDetails());
+        this.entryElement.addEventListener('click', () => this.toggleDetails());
     }
     toggleDetails() {
         this.entryElement.classList.toggle('expanded');

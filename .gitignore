@@ -1,5 +1,2 @@
-# omit the compiled-js
-webapp/static/compiled-js
-
-# omit the embedded post-processed html, css, and js
-cmd/server/embed/webapp/*
+bin/*
+data/*

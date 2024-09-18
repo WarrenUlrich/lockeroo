@@ -9,7 +9,6 @@ interface SavedPassword {
 
 class PasswordEntry extends HTMLElement {
     private shadow: ShadowRoot;
-    private expandIcon: HTMLElement;
     private entryElement: HTMLElement;
     private detailsElement: HTMLElement;
 
@@ -30,6 +29,7 @@ class PasswordEntry extends HTMLElement {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
+                    cursor: pointer; /* Make the whole entry clickable */
                 }
                 .details {
                     display: none;
@@ -37,7 +37,6 @@ class PasswordEntry extends HTMLElement {
                     background-color: #f9f9f9;
                 }
                 .expand {
-                    cursor: pointer;
                     transform: rotate(90deg);
                     transition: transform 0.3s;
                 }
@@ -62,12 +61,11 @@ class PasswordEntry extends HTMLElement {
         this.shadow.appendChild(template.content.cloneNode(true));
 
         // Cache elements
-        this.expandIcon = this.shadow.querySelector('.expand') as HTMLElement;
         this.entryElement = this.shadow.querySelector('.entry') as HTMLElement;
         this.detailsElement = this.shadow.querySelector('.details') as HTMLElement;
 
         // Attach an event listener to toggle the details visibility
-        this.expandIcon.addEventListener('click', () => this.toggleDetails());
+        this.entryElement.addEventListener('click', () => this.toggleDetails());
     }
 
     /**
