@@ -1,0 +1,102 @@
+/* Navbar container */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    padding: 15px 30px;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+/* Left section with logo and app name */
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+}
+
+.logo-image {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.app-name {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Center navigation links */
+.navbar-center {
+    display: flex;
+    gap: 20px;
+}
+
+.navbar-center a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+}
+
+.navbar-center a:hover {
+    text-decoration: underline;
+}
+
+/* Right section for buttons */
+.navbar-right {
+    display: flex;
+    gap: 15px;
+}
+
+.nav-button {
+    padding: 10px 20px;
+    background-color: #555;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.nav-button:hover {
+    background-color: #777;
+}
+
+.sign-up {
+    background-color: #4CAF50;
+    /* Green for Sign Up */
+}
+
+.logout {
+    background-color:red;
+}
+
+.logout:hover {
+    background-color: #8B0000;
+}
+
+.sign-up:hover {
+    background-color: #45a049;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .navbar-center {
+        margin: 10px 0;
+        flex-direction: column;
+    }
+
+    .navbar-right {
+        align-self: flex-end;
+    }
+}

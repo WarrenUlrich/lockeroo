@@ -21,6 +21,19 @@ type Handlers struct {
 }
 
 func (h *Handlers) HandleLogin(w http.ResponseWriter, r *http.Request) {
+	sessionCookie, err := r.Cookie("session_id")
+	if err == nil { // Cookie exists, now validate the session
+		var userID int
+		var expiresAt time.Time
+		err = h.DB.QueryRow("SELECT user_id, expires_at FROM sessions WHERE session_id = ? AND expires_at > ?", sessionCookie.Value, time.Now()).Scan(&userID, &expiresAt)
+		if err == nil {
+			// Session is valid
+			fmt.Fprintln(w, "Already logged in")
+			return
+		}
+		// If there's an error, we assume the session is not valid anymore and continue with login
+	}
+
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
@@ -31,12 +44,13 @@ func (h *Handlers) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		Password string `json:"password"`
 	}
 
-	err := json.NewDecoder(r.Body).Decode(&creds)
+	err = json.NewDecoder(r.Body).Decode(&creds)
 	if err != nil {
 		http.Error(w, "Bad Request", http.StatusBadRequest)
 		return
 	}
 
+	fmt.Println("creds:", creds)
 	// Fetch the user from the database
 	var storedHash string
 	var userID int

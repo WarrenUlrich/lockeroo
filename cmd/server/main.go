@@ -7,10 +7,8 @@ import (
 	"net/http"
 
 	"github.com/warrenulrich/lockeroo/pkg/api"
-	"github.com/warrenulrich/lockeroo/pkg/assets"
 	"github.com/warrenulrich/lockeroo/pkg/db"
 	"github.com/warrenulrich/lockeroo/pkg/middleware"
-	"github.com/warrenulrich/lockeroo/pkg/templates"
 )
 
 func main() {
@@ -26,34 +24,16 @@ func main() {
 	}
 	defer database.Close()
 
-	// Initialize templates
-	if err := templates.InitTemplates(); err != nil {
-		log.Fatalf("Error initializing templates: %v", err)
-	}
-
-	// Prepare embedded file systems
-	embedFS, err := assets.GetEmbedFS()
-	if err != nil {
-		log.Fatalf("Error accessing embedded files: %v", err)
-	}
-
 	// Create a new HTTP server
 	publicMux := http.NewServeMux()
 
-	// Serve static files
-	fileServer := http.FileServer(http.FS(embedFS))
-	publicMux.Handle("/css/", fileServer)
-	publicMux.Handle("/js/", fileServer)
-	publicMux.Handle("/images/", fileServer)
-
 	// Initialize handlers
 	handlers := &api.Handlers{
-		DB:        database,
-		Templates: templates.Templates,
+		DB: database,
 	}
 
 	// Public routes
-	publicMux.HandleFunc("/", handlers.IndexHandler)
+	// publicMux.Handle("/", assets.ServeStaticFiles())
 	publicMux.HandleFunc("/auth/login", handlers.HandleLogin)
 	publicMux.HandleFunc("/auth/signup", handlers.HandleSignup)
 
@@ -61,10 +41,10 @@ func main() {
 	protectedMux := http.NewServeMux()
 	protectedMux.HandleFunc("/auth/status", handlers.AuthStatusHandler)
 	protectedMux.HandleFunc("/auth/logout", handlers.LogoutHandler)
-	
+
 	mainMux := http.NewServeMux()
 
-	mainMux.Handle("/", publicMux)
+	// mainMux.Handle("/", publicMux)
 	mainMux.Handle("/auth/login", publicMux)
 	mainMux.Handle("/auth/signup", publicMux)
 
